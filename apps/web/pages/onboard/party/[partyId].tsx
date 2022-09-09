@@ -3,6 +3,7 @@ import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
 import { UserContext } from "@context/eden";
 import {
   ENTER_ROOM,
+  EXIT_ROOM,
   FIND_ROOM,
   MEMBER_UPDATED,
   ROOM_UPDATED,
@@ -73,6 +74,7 @@ const OnboardPartyPage: NextPageWithLayout = () => {
   });
 
   const [enterRoom] = useMutation(ENTER_ROOM, {});
+  const [exitRoom] = useMutation(EXIT_ROOM, {});
 
   useEffect(() => {
     // if user logged in and not in party, add currentUser to party
@@ -194,6 +196,25 @@ const OnboardPartyPage: NextPageWithLayout = () => {
       },
     });
   };
+
+  useEffect(() => {
+    addEventListener(
+      "beforeunload",
+      (event) => {
+        event.preventDefault();
+        // exitRoom({
+        //   variables: {
+        //     fields: {
+        //       roomID: partyId,
+        //       memberID: currentUser?._id,
+        //     },
+        //   },
+        // });
+        event.returnValue = "Are you sure you want to exit?";
+      },
+      { capture: true }
+    );
+  }, []);
 
   return (
     <GridLayout>
